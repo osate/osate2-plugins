@@ -38,8 +38,13 @@ class ConnectionBindingConsistencyTest extends OsateTest {
 	}
 	
 	@Test
-	def void textJava8() {
+	def void testJava8() {
 		testAnalysis[new CheckConnectionBindingConsistencyJava8().invoke(new NullProgressMonitor, it)]
+	}
+	
+	@Test
+	def void testScala() {
+		testAnalysis[XtendScalaBridge.invokeScala(it)]
 	}
 	
 	def void testAnalysis((SystemInstance)=>void analysisInvoker) {
