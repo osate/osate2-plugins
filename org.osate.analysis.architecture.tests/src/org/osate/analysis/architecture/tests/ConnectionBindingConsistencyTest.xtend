@@ -11,6 +11,7 @@ import org.osate.aadl2.AadlPackage
 import org.osate.aadl2.SystemImplementation
 import org.osate.aadl2.instance.SystemInstance
 import org.osate.analysis.architecture.actions.CheckConnectionBindingConsistency
+import org.osate.analysis.architecture.fptest.CheckConnectionBindingConsistencyJava8
 import org.osate.analysis.architecture.fptest.CheckConnectionBindingConsistencyXtend
 import org.osate.core.test.Aadl2UiInjectorProvider
 import org.osate.core.test.OsateTest
@@ -34,6 +35,11 @@ class ConnectionBindingConsistencyTest extends OsateTest {
 	@Test
 	def void testXtend() {
 		testAnalysis[new CheckConnectionBindingConsistencyXtend().invoke(new NullProgressMonitor, it)]
+	}
+	
+	@Test
+	def void textJava8() {
+		testAnalysis[new CheckConnectionBindingConsistencyJava8().invoke(new NullProgressMonitor, it)]
 	}
 	
 	def void testAnalysis((SystemInstance)=>void analysisInvoker) {
