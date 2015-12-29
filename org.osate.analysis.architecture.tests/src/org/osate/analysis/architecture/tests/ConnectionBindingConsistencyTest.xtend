@@ -9,7 +9,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.osate.aadl2.AadlPackage
 import org.osate.aadl2.SystemImplementation
+import org.osate.aadl2.instance.SystemInstance
 import org.osate.analysis.architecture.actions.CheckConnectionBindingConsistency
+import org.osate.analysis.architecture.fptest.CheckConnectionBindingConsistencyXtend
 import org.osate.core.test.Aadl2UiInjectorProvider
 import org.osate.core.test.OsateTest
 
@@ -25,7 +27,16 @@ class ConnectionBindingConsistencyTest extends OsateTest {
 	}
 	
 	@Test
-	def void testAnalysis() {
+	def void testOriginal() {
+		testAnalysis[new CheckConnectionBindingConsistency().invoke(new NullProgressMonitor, it)]
+	}
+	
+	@Test
+	def void testXtend() {
+		testAnalysis[new CheckConnectionBindingConsistencyXtend().invoke(new NullProgressMonitor, it)]
+	}
+	
+	def void testAnalysis((SystemInstance)=>void analysisInvoker) {
 		val connectionBindingFileName = "Connection_Binding.aadl"
 		createFiles(connectionBindingFileName -> '''
 			package Connection_Binding
@@ -89,7 +100,7 @@ class ConnectionBindingConsistencyTest extends OsateTest {
 				"s1.impl".assertEquals(name)
 				buildInstanceModelFile => [
 					"s1_impl_Instance".assertEquals(name)
-					new CheckConnectionBindingConsistency().invoke(new NullProgressMonitor, it)
+					analysisInvoker.apply(it)
 					val uri = URI.createURI(resourceRoot + "/instances/reports/ConnectionBindingConsistency/Connection_Binding_s1_impl_Instance__ConnectionBindingConsistency.csv")
 					val actual = workspaceRoot.getFile(new Path(uri.toPlatformString(true))).contents.readStreamIntoString.trim
 					'''
